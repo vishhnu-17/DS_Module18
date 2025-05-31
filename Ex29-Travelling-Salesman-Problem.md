@@ -1,91 +1,110 @@
-# Ex 6D Travelling Salesman Problem
-## DATE: 12/05/2025
+# Ex 6E Finding Total Cost of Spanning Tree
+## DATE: 17/05/2025
 ## AIM:
-To write a C Program to implement Travelling Salesman Problem for finding shortest path.
-
+To write a C Program to implement Prim's Algorithm for finding Total Cost of spanning tree.
 ## Algorithm
-1. Declare global variables: a[10][10], visited[10] (all 0), n, and cost = 0.
-2. In get(), read number of cities n, input cost matrix a[i][j], and initialize visited[].
-3. In mincost(city), mark city visited, print it, find next city using least(city), update cost, and recurse.
-4. In least(city), check unvisited cities, find one with minimum cost, return its index. 
-5. In main, call get(), then mincost(0), and finally put() to print total minimum cost. 
+1. Initialize Variables: Define infinity = 9999, MAX = 20, and declare the adjacency matrix G[MAX][MAX], MST matrix spanning[MAX][MAX], and integer n.
+2. Input Graph Data: Read the number of vertices n and edge weights into G[i][j].
+3. Run prims() Function:Initialize cost[][], spanning[][], distance[], from[], and visited[].
+While there are edges left to add to the MST, find the vertex with the smallest distance[], update the MST, and adjust distance[] for unvisited vertices.
+4. Print MST: After the prims() function completes, print the spanning[][] matrix representing the minimum spanning tree. 
+5. Display Total Cost: Output the min_cost of the spanning tree, which is the total minimum cost.
 
 ## Program:
 ```
 /*
-Program to implement Travelling Salesman Problem for finding shortest path
-Developed by: Cynthia Mehul
-RegisterNumber:  212223240020
+Program to implement Prim's Algorithm for finding Total Cost of spanning tree.
+Developed by: Kurapati Vishnu Vardhan Reddy
+RegisterNumber: 212223040103
 */
 #include<stdio.h>
-int a[10][10],visited[10],n,cost=0;
-
-void get()
-{
-	int i,j;
-		scanf("%d",&n);
-	for(i=0;i < n;i++)
-	{
-			for( j=0;j < n;j++)
-			scanf("%d",&a[i][j]);
-		visited[i]=0;
-	}
-	}
-
-void mincost(int city)
-{
-	int ncity;
-	int least(int);
-	visited[city]=1;	
-	printf("%d -->",city+1);
-	ncity=least(city);
-	if(ncity==999)
-	{
-		ncity=0;
-		printf("%d",ncity+1);
-		cost+=a[city][ncity];
-		return;
-	}
-	mincost(ncity);
-}
-
-int least(int c)
-{
-	int i,nc=999;
-	int min=999,kmin;
-	for(i=0;i < n;i++)
-	{
-		if((a[c][i]!=0)&&(visited[i]==0))
-			if(a[c][i] < min)
-			{
-				min=a[i][0]+a[c][i];
-				kmin=a[c][i];
-				nc=i;
-			}
-	}
-	if(min!=999)
-		cost+=kmin;
-	return nc;
-}
-
-void put()
-{
-	printf("\n\nMinimum cost:%d",cost);
-	}
-
+#include<stdlib.h>
+ 
+#define infinity 9999
+#define MAX 20
+ 
+int G[MAX][MAX],spanning[MAX][MAX],n;
+ 
+int prims();
+ 
 int main()
 {
-	get();
-	mincost(0);
-	put();
-	return 0;
-	}
+int i,j,total_cost;
+scanf("%d",&n);
+for(i=0;i<n;i++)
+for(j=0;j<n;j++)
+scanf("%d",&G[i][j]);
+total_cost=prims();
 
+for(i=0;i<n;i++)
+{
+for(j=0;j<n;j++)
+printf("%d ",spanning[i][j]);
+printf("\n");
+}
+printf("\nTotal cost of spanning tree=%d",total_cost);
+return 0;
+}
+ 
+int prims()
+{
+int cost[MAX][MAX];
+int u,v,min_distance,distance[MAX],from[MAX];
+int visited[MAX],no_of_edges,i,min_cost,j;
+//create cost[][] matrix,spanning[][]
+for(i=0;i<n;i++)
+for(j=0;j<n;j++)
+{
+if(G[i][j]==0)
+cost[i][j]=infinity;
+else
+cost[i][j]=G[i][j];
+spanning[i][j]=0;
+}
+//initialise visited[],distance[] and from[]
+distance[0]=0;
+visited[0]=1;
+for(i=1;i<n;i++)
+{
+distance[i]=cost[0][i];
+from[i]=0;
+visited[i]=0;
+}
+min_cost=0; //cost of spanning tree
+no_of_edges=n-1; //no. of edges to be added
+while(no_of_edges>0)
+{
+//find the vertex at minimum distance from the tree
+min_distance=infinity;
+for(i=1;i<n;i++)
+if(visited[i]==0&&distance[i]<min_distance)
+{
+v=i;
+min_distance=distance[i];
+}
+u=from[v];
+//insert the edge in spanning tree
+spanning[u][v]=distance[v];
+spanning[v][u]=distance[v];
+no_of_edges--;
+visited[v]=1;
+//updated the distance[] array
+for(i=1;i<n;i++)
+if(visited[i]==0&&cost[i][v]<distance[i])
+{
+distance[i]=cost[i][v];
+from[i]=v;
+}
+min_cost=min_cost+cost[u][v];
+}
+return(min_cost);
+}
 ```
 
 ## Output:
 
-![image](https://github.com/user-attachments/assets/3c143d65-298c-41fb-9de1-67213ba4b210)
+![image](https://github.com/user-attachments/assets/a035c4b8-7200-48a6-a304-0a211c8c6d3a)
+
 
 ## Result:
-Thus, the C program to implement Travelling Salesman Problem for finding shortest path is implemented successfully.
+Thus the C program to implement Prim's Algorithm for finding Total Cost of spanning tree is implemented successfully.
